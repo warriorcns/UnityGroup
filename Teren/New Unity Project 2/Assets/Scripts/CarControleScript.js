@@ -35,6 +35,7 @@ function Start(){
 	//ustawianie środka masy
 	rigidbody.centerOfMass.y = centerOfMassY;    
 	rigidbody.centerOfMass.z = centerOfMassZ;
+	rigidbody.AddForce(3 * Physics.gravity);
 	
 	//ustawianie tarcia bocznego i przedniego
 	forwardFrict = wheelRR.forwardFriction.stiffness;   
