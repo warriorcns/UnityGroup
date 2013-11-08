@@ -1,9 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Temp\Compiled-Normal-Diffuse.shader">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CarControleScript.js">
     <Files>
-      <File FileName="Assets\Scripts\CarControleScript.js" Line="19" Column="34" />
-      <File FileName="Temp\Compiled-Normal-Diffuse.shader" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CarControleScript.js" Line="38" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
