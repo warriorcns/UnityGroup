@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CarControleScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AICarControlScript.js">
     <Files>
-      <File FileName="Assets\Scripts\CarControleScript.js" Line="38" Column="4" />
+      <File FileName="Assets\Scripts\CarControleScript.js" Line="145" Column="2" />
+      <File FileName="Assets\Scripts\AICarControlScript.js" Line="70" Column="70" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

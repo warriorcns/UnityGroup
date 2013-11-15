@@ -11,7 +11,7 @@ var wheelRLTrans : Transform;
 var wheelRRTrans : Transform;
 
 var minSpeed : float = -50;  //minimalna szybkość
-var maxSpeed : float = 150;  //maksymalna szybkość
+var maxSpeed : float = 250;  //maksymalna szybkość
 var speed : float;    //szybkość
 
 private var friction : float;  //tarcie
@@ -28,20 +28,31 @@ var breaking = 50;      //hamowanie
 var braked : boolean = false;   //czy hamuje
 var maxBrake : float = 100;    //maksymalna wartość hamowania
 
-var centerOfMassY : float = -1.65;   //środek masy
-var centerOfMassZ : float = 1.0;
+var wfc : WheelFrictionCurve;
+
+var centerOfMass : Transform;
 
 function Start(){
-	//ustawianie środka masy
-	rigidbody.centerOfMass.y = centerOfMassY;    
-	rigidbody.centerOfMass.z = centerOfMassZ;
-	//rigidbody.AddForce(-Physics.gravity);
+	//rigidbody.AddForce(-Physics.gravity);	
+	rigidbody.centerOfMass = centerOfMass.localPosition;
 	
 	//ustawianie tarcia bocznego i przedniego
 	forwardFrict = wheelRR.forwardFriction.stiffness;   
 	friction = wheelRR.sidewaysFriction.stiffness;
 	slipForwardFrict = 0.003;
 	slipFriction = 0.001;
+	
+	SetupWheelFrictionCurve();
+}
+
+function SetupWheelFrictionCurve()
+{
+	wfc = new WheelFrictionCurve();
+	wfc.extremumSlip = 1;
+    wfc.extremumValue = 50;
+	wfc.asymptoteSlip = 2;
+	wfc.asymptoteValue = 25;
+	wfc.stiffness = 1;
 }
 
 function FixedUpdate(){
@@ -52,7 +63,7 @@ function FixedUpdate(){
 }
 
 function Movement(){
-	speed = 6.3 * wheelRL.radius * wheelRL.rpm * 60/1000;    //ustawianie prędkości
+	speed = 10 * wheelRL.radius * wheelRL.rpm * 60/1000;    //ustawianie prędkości
 	speed = Mathf.Round(speed);
 	
 	if(speed > -maxSpeed && speed < maxReverseSpeed && !braked){       //ograniczenie prędkości
@@ -127,6 +138,10 @@ function Friction(currentForwardFrict : float, currentFriction : float){
 	wheelRL.forwardFriction.stiffness = currentForwardFrict;
 	wheelRR.sidewaysFriction.stiffness = currentFriction;
 	wheelRL.sidewaysFriction.stiffness = currentFriction;
+	//wheelFL.sidewaysFriction = wfc;
+	//wheelFR.sidewaysFriction = wfc;
+	//wheelRR.sidewaysFriction = wfc;
+	//wheelRL.sidewaysFriction = wfc;
 }
 
 
