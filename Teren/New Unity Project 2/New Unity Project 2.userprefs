@@ -1,13 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AICarControlScript.js">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CarControleScript.js">
     <Files>
-      <File FileName="Assets\Scripts\CarControleScript.js" Line="145" Column="2" />
-      <File FileName="Assets\Scripts\AICarControlScript.js" Line="70" Column="70" />
+      <File FileName="Assets\Scripts\CarControleScript.js" Line="127" Column="29" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\dkohland\Documents\GitHub\UnityGroup\Teren\New Unity Project 2\Assets\Scripts\CarControleScript.js" line="133" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

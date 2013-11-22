@@ -41,7 +41,7 @@ function LateUpdate(){
 	transform.position = car.position;                                    //poruszanie się kamery
 	transform.position += currentRotation * Vector3.back * distance;
 	transform.position.y = myHeight;
-	//transform.position.z = myDepth;
+	transform.position.z = myDepth;
 	transform.LookAt(new Vector3(car.position.x, car.position.y, car.position.z));
 	//transform.LookAt(car);
 }
