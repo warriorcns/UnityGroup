@@ -32,7 +32,7 @@ public class Car : MonoBehaviour {
 	
 	public float wheelRadius = 0.599f; // promień koła
 	public float torque = 100f; // moc bazowa silnika
-	public float brakeTorque = 2000f; // moc hamowania
+	public float brakeTorque = 1000f; // moc hamowania
 	public WheelDrive wheelDrive = WheelDrive.Front; // koła prowadzące śa przednimi	
 	public float shiftDownRPM = 1500.0f; // przesunie bieg w doł
 	public float shiftUpRPM = 2500.0f; // przesunie bieg w górę
@@ -44,6 +44,7 @@ public class Car : MonoBehaviour {
 	float wantedRPM = 0.0f; // liczba obrotów na minutę jaką silnik stara się osiągnąć
 	float motorRPM = 0.0f;  //bieżąca liczba obrotów na minutę
 	float maxRPM = 5500.0f;  //maksymalna liczba obrotów na minutę
+	float newTorque = 0.0f;
 	
 	//Tabela wydajności przy określonej prędkości obrotowej
 	float[] efficiencyTable = { 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 1.0f, 1.0f, 
@@ -179,7 +180,7 @@ public class Car : MonoBehaviour {
 	{
 		float delta = Time.fixedDeltaTime;           //Bieżący czas
 		float steer = Input.GetAxis("Horizontal");   //kąt sterowania pojazdem
-		float accel = - Input.GetAxis("Vertical");   //przyspieszenie pojazdu
+		float accel = Input.GetAxis("Vertical");   //przyspieszenie pojazdu
 		bool brake = Input.GetButton ("Jump");       //czy hamuje?
 
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
@@ -202,16 +203,17 @@ public class Car : MonoBehaviour {
 		{
 			ShiftDown();
 		}
-		
-		if(currentGear == 0)  //jeśli wsteczny to cofa
-			accel = -accel;
-		
-		if(accel < 0.0f)   //hamowanie jeśli przyspieszenie mniejsze od 0
+
+		//hamowanie jeśli przyspieszenie mniejsze od 0
+		if(accel < 0 && newTorque < 0 || (accel > 0 && newTorque > 0))  
 		{
 			brake = true;
 			accel = 0.0f;
 			wantedRPM = 0.0f;
 		}
+		
+		if(currentGear == 0)  //jeśli wsteczny to cofa
+			accel = -accel;
 
 		//Obliczanie liczby obrotów na minutę
 		wantedRPM = (maxRPM * accel) * 0.1f + wantedRPM * 0.9f;
@@ -276,7 +278,7 @@ public class Car : MonoBehaviour {
 		index = (int)Mathf.Clamp(index, 0, efficiencyTable.Length - 1);
 
 		//Obliczanie momentu obrotowego
-		float newTorque = torque * gears[currentGear] * efficiencyTable[index];
+		newTorque = torque * -gears[currentGear] * efficiencyTable[index];
 		
 		foreach(WheelData wd in Wheels)
 		{
