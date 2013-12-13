@@ -32,7 +32,7 @@ public class Car : MonoBehaviour {
 	
 	public float wheelRadius = 0.599f; // promień koła
 	public float torque = 100f; // moc bazowa silnika
-	public float brakeTorque = 1000f; // moc hamowania
+	public float brakeTorque = 0.0f; // moc hamowania
 	public WheelDrive wheelDrive = WheelDrive.Front; // koła prowadzące śa przednimi	
 	public float shiftDownRPM = 1500.0f; // przesunie bieg w doł
 	public float shiftUpRPM = 2500.0f; // przesunie bieg w górę
@@ -305,7 +305,15 @@ public class Car : MonoBehaviour {
 					collider.motorTorque = (curTorque * 0.9f + newTorque * 0.1f) * 0.5f;
 				}
 			}
-			collider.brakeTorque = (brake) ? brakeTorque : 0.0f;  //hamowanie
+			//collider.brakeTorque = (brake) ? brakeTorque : 0.0f;  //hamowanie
+			if(brake)
+			{
+				collider.brakeTorque = 120.0f;
+			}
+			else
+			{
+				collider.brakeTorque = 0.0f;
+			}
 		}
 	}
 	
