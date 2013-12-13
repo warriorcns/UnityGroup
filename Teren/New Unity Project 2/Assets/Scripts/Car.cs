@@ -55,7 +55,11 @@ public class Car : MonoBehaviour {
 	// skala wykładników dla tabeli
 	float efficiencyTableStep = 250.0f;
 
-	float resetTime = 5.0f;
+	float resetTime = 5.0f;     //czas pozostały do resetowania kąta samochodu jak się przewrócił
+	float steer = 0.0f;        //kąt sterowania
+	float lowestSteerAtSpeed = 100.0f; 
+	float highSpeedSteerAngle = 1;   
+	float lowSpeedSteerAngle = 10.0f;  
 	
 	
 	//Klasa informacji o kole
@@ -179,9 +183,13 @@ public class Car : MonoBehaviour {
 	void Control()
 	{
 		float delta = Time.fixedDeltaTime;           //Bieżący czas
-		float steer = Input.GetAxis("Horizontal");   //kąt sterowania pojazdem
+		//steer *= Input.GetAxis("Horizontal");   //kąt sterowania pojazdem
 		float accel = Input.GetAxis("Vertical");   //przyspieszenie pojazdu
 		bool brake = Input.GetButton ("Jump");       //czy hamuje?
+
+		var speedFactor = rigidbody.velocity.magnitude/lowestSteerAtSpeed;	
+		var steer = Mathf.Lerp(lowSpeedSteerAngle,highSpeedSteerAngle,speedFactor);	
+		steer *= Input.GetAxis("Horizontal");
 
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
 		if(currentGear == 1 && accel < 0.0f)  
@@ -215,14 +223,13 @@ public class Car : MonoBehaviour {
 		if(currentGear == 0)  //jeśli wsteczny to cofa
 			accel = -accel;
 
+
 		//Obliczanie liczby obrotów na minutę
 		wantedRPM = (maxRPM * accel) * 0.1f + wantedRPM * 0.9f;
 		
 		float rpm = 0.0f;
 		int motorizedWheels = 0;
 		bool floorContact = false;
-		
-		float currentSteer = steer * maxSteerAngle;
 		
 		foreach(WheelData wd in Wheels)
 		{
@@ -241,7 +248,7 @@ public class Car : MonoBehaviour {
 			if(wd.isFront)  //Obrót kół przednich
 			{
 				wd.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, wd.collider.steerAngle);
-				wd.collider.steerAngle = currentSteer;
+				wd.collider.steerAngle = steer;
 			}
 			else  //Obrót kół tylnich
 			{
