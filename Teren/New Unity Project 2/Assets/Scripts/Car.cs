@@ -23,7 +23,7 @@ public class Car : MonoBehaviour {
 	public Vector3 shiftCentre = new Vector3(0.0f, -0.25f, 0.0f); //środek masy
 	public float maxSteerAngle = 30.0f;   //maksymalny kąt obrotu kół
 	
-	public float suspensionDistance = 0.1f; // wartość ruchu zawieszenia
+	public float suspensionDistance = 0.01f; // wartość ruchu zawieszenia
 	public float springs = 1000.0f; // sprężyny zawieszenia
 	public float dampers = 2f; // jak bardzo tłumione jest zawieszenie?
 	public float wheelWeight = 2f; // waga koła
@@ -56,10 +56,18 @@ public class Car : MonoBehaviour {
 	float efficiencyTableStep = 250.0f;
 
 	float resetTime = 5.0f;     //czas pozostały do resetowania kąta samochodu jak się przewrócił
-	float steer = 0.0f;        //kąt sterowania
 	float lowestSteerAtSpeed = 100.0f; 
-	float highSpeedSteerAngle = 1;   
+	float highSpeedSteerAngle = 5;   
 	float lowSpeedSteerAngle = 10.0f;  
+
+	float decelerationSpeed = 50.0f;   //zwalnianie jeśli nie naciska się żadnego przycisku
+	float frontPowerBrake = 120.0f;    //moc hamowania jeśli jedzie do przodu
+	float backPowerBrake = 12000.0f;    //moc hamowania jeśli jedzie do tyłu
+
+	public float accel = 0.0f;        //przyspieszenie
+	public float steer = 0.0f;        //kąt sterowania
+	public bool brake = false;        //czy hamuje
+	public float steerScale = 0.0f;
 	
 	
 	//Klasa informacji o kole
@@ -143,10 +151,15 @@ public class Car : MonoBehaviour {
 			currentWheel++;
 		}
 	}
+
+	protected virtual void CarUpdate() 
+	{ 
+		Control();
+	}
 	
 	void FixedUpdate()
 	{
-		Control ();       				
+		CarUpdate ();     				
 	}
 
 	//Bieg w górę
@@ -183,13 +196,10 @@ public class Car : MonoBehaviour {
 	void Control()
 	{
 		float delta = Time.fixedDeltaTime;           //Bieżący czas
-		//steer *= Input.GetAxis("Horizontal");   //kąt sterowania pojazdem
-		float accel = Input.GetAxis("Vertical");   //przyspieszenie pojazdu
-		bool brake = Input.GetButton ("Jump");       //czy hamuje?
 
 		var speedFactor = rigidbody.velocity.magnitude/lowestSteerAtSpeed;	
 		var steer = Mathf.Lerp(lowSpeedSteerAngle,highSpeedSteerAngle,speedFactor);	
-		steer *= Input.GetAxis("Horizontal");
+		steer *= steerScale;  //kąt sterowania pojazdem
 
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
 		if(currentGear == 1 && accel < 0.0f)  
@@ -254,7 +264,8 @@ public class Car : MonoBehaviour {
 			{
 				wd.transform.localRotation = Quaternion.Euler (wd.rotationX, 0.0f, 0.0f);
 			}
-			
+
+			//Zawieszenie
 			Vector3 lp = wd.transform.localPosition;
 			if(collider.GetGroundHit(out hit))
 			{
@@ -305,14 +316,28 @@ public class Car : MonoBehaviour {
 					collider.motorTorque = (curTorque * 0.9f + newTorque * 0.1f) * 0.5f;
 				}
 			}
-			//collider.brakeTorque = (brake) ? brakeTorque : 0.0f;  //hamowanie
+
+			//hamowanie
 			if(brake)
 			{
-				collider.brakeTorque = 120.0f;
+				if(Input.GetAxis("Vertical") > 0)
+				{
+					collider.brakeTorque = backPowerBrake;
+				}
+				else if(Input.GetAxis("Vertical") < 0)
+				{
+					collider.brakeTorque = frontPowerBrake;
+				}
 			}
 			else
 			{
 				collider.brakeTorque = 0.0f;
+			}
+		     
+			//zwalnianie
+			if (Input.GetButton("Vertical")==false){			
+				collider.brakeTorque = decelerationSpeed;			
+				collider.brakeTorque = decelerationSpeed;				
 			}
 		}
 	}
