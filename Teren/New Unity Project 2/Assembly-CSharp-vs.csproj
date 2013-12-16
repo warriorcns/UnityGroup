@@ -46,7 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Campfire Pack\Script\SwitchView.cs" />
+     <Compile Include="Assets\Models\Campfire Pack\Script\SwitchView.cs" />
      <Compile Include="Assets\Scripts\Car.cs" />
      <Compile Include="Assets\Scripts\PlayerCarController.cs" />
      <Compile Include="Assets\Scripts\SmoothFollow.cs" />
