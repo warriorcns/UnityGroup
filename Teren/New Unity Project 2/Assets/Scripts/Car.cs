@@ -54,16 +54,16 @@ public class Car : MonoBehaviour {
 	
 	// skala wykładników dla tabeli
 	float efficiencyTableStep = 250.0f;
-
+	
 	float resetTime = 5.0f;     //czas pozostały do resetowania kąta samochodu jak się przewrócił
 	float lowestSteerAtSpeed = 100.0f; 
 	float highSpeedSteerAngle = 5;   
 	float lowSpeedSteerAngle = 10.0f;  
-
+	
 	float decelerationSpeed = 50.0f;   //zwalnianie jeśli nie naciska się żadnego przycisku
 	float frontPowerBrake = 120.0f;    //moc hamowania jeśli jedzie do przodu
 	float backPowerBrake = 12000.0f;    //moc hamowania jeśli jedzie do tyłu
-
+	
 	public float accel = 0.0f;        //przyspieszenie
 	public float steer = 0.0f;        //kąt sterowania
 	public bool brake = false;        //czy hamuje
@@ -79,7 +79,7 @@ public class Car : MonoBehaviour {
 		public float rotationX = 0.0f;   //obrót koła względem osi X
 		public Vector3 startPosition;
 	}
-
+	
 	//Ustawienia parametrów zderzacza kołowego (tarcie itp.)
 	void InitializeWheelCollider(WheelCollider wc)
 	{
@@ -107,16 +107,16 @@ public class Car : MonoBehaviour {
 	void Start()
 	{
 		Wheels = new WheelData[4];
-
+		
 		InitializeWheels();
 		
 		rigidbody.centerOfMass = shiftCentre;  //ustawienie środka masy
 	}
-
+	
 	void InitializeWheels()
 	{
 		int currentWheel = 0;
-
+		
 		foreach(Transform wheelT in frontWheelTransforms)
 		{
 			Wheels[currentWheel] = new WheelData();
@@ -140,6 +140,7 @@ public class Car : MonoBehaviour {
 			InitializeWheelCollider(wheelC);
 			Wheels[currentWheel].collider = wheelC;
 			Wheels[currentWheel].isFront = true;
+			wheelC.steerAngle = 0.0f;
 			currentWheel++;
 		}
 		
@@ -148,10 +149,11 @@ public class Car : MonoBehaviour {
 			InitializeWheelCollider(wheelC);
 			Wheels[currentWheel].collider = wheelC;
 			Wheels[currentWheel].isFront = false;
+			wheelC.steerAngle = 0.0f;
 			currentWheel++;
 		}
 	}
-
+	
 	protected virtual void CarUpdate() 
 	{ 
 		Control();
@@ -161,7 +163,7 @@ public class Car : MonoBehaviour {
 	{
 		CarUpdate ();     				
 	}
-
+	
 	//Bieg w górę
 	public void ShiftUp() 
 	{
@@ -176,7 +178,7 @@ public class Car : MonoBehaviour {
 			shiftDelay = now + 1.0f;
 		}
 	}
-
+	
 	//Bieg w doł
 	public void ShiftDown() 
 	{
@@ -191,16 +193,16 @@ public class Car : MonoBehaviour {
 			shiftDelay = now + 0.1f;
 		}
 	}
-
+	
 	//Kontrola ruchu samochodu
 	void Control()
 	{
 		float delta = Time.fixedDeltaTime;           //Bieżący czas
-
+		
 		var speedFactor = rigidbody.velocity.magnitude/lowestSteerAtSpeed;	
 		var steer = Mathf.Lerp(lowSpeedSteerAngle,highSpeedSteerAngle,speedFactor);	
 		steer *= steerScale;  //kąt sterowania pojazdem
-
+		
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
 		if(currentGear == 1 && accel < 0.0f)  
 		{
@@ -221,7 +223,7 @@ public class Car : MonoBehaviour {
 		{
 			ShiftDown();
 		}
-
+		
 		//hamowanie jeśli przyspieszenie mniejsze od 0
 		if(accel < 0 && newTorque < 0 || (accel > 0 && newTorque > 0))  
 		{
@@ -232,8 +234,8 @@ public class Car : MonoBehaviour {
 		
 		if(currentGear == 0)  //jeśli wsteczny to cofa
 			accel = -accel;
-
-
+		
+		
 		//Obliczanie liczby obrotów na minutę
 		wantedRPM = (maxRPM * accel) * 0.1f + wantedRPM * 0.9f;
 		
@@ -251,7 +253,7 @@ public class Car : MonoBehaviour {
 				rpm += collider.rpm;
 				motorizedWheels++;
 			}
-
+			
 			//Obliczanie obrotu kół względem osi x
 			wd.rotationX = Mathf.Repeat(wd.rotationX + delta * wd.collider.rpm * 360.0f / 60.0f, 360.0f);
 			
@@ -264,7 +266,7 @@ public class Car : MonoBehaviour {
 			{
 				wd.transform.localRotation = Quaternion.Euler (wd.rotationX, 0.0f, 0.0f);
 			}
-
+			
 			//Zawieszenie
 			Vector3 lp = wd.transform.localPosition;
 			if(collider.GetGroundHit(out hit))
@@ -283,7 +285,7 @@ public class Car : MonoBehaviour {
 		{
 			rpm = rpm/motorizedWheels;   //kolejne modyfikacji liczby obrotów
 		}
-
+		
 		//Obliczanie liczby obrotów na minutę uwzględniając mnożnik bieżącego biegu
 		motorRPM = 0.95f * motorRPM + 0.05f * Mathf.Abs(rpm * gears[currentGear]);
 		
@@ -294,7 +296,7 @@ public class Car : MonoBehaviour {
 		
 		int index = (int)(motorRPM/efficiencyTableStep);
 		index = (int)Mathf.Clamp(index, 0, efficiencyTable.Length - 1);
-
+		
 		//Obliczanie momentu obrotowego
 		newTorque = torque * -gears[currentGear] * efficiencyTable[index];
 		
@@ -316,7 +318,7 @@ public class Car : MonoBehaviour {
 					collider.motorTorque = (curTorque * 0.9f + newTorque * 0.1f) * 0.5f;
 				}
 			}
-
+			
 			//hamowanie
 			if(brake)
 			{
@@ -333,7 +335,7 @@ public class Car : MonoBehaviour {
 			{
 				collider.brakeTorque = 0.0f;
 			}
-		     
+			
 			//zwalnianie
 			if (Input.GetButton("Vertical")==false){			
 				collider.brakeTorque = decelerationSpeed;			
@@ -346,7 +348,7 @@ public class Car : MonoBehaviour {
 	{          
 		CheckIfCarIsFlipped();
 	}
-
+	
 	float resetTimer = 0.0f;
 	protected void CheckIfCarIsFlipped()
 	{
@@ -354,11 +356,11 @@ public class Car : MonoBehaviour {
 			resetTimer += Time.deltaTime;
 		else
 			resetTimer = 0;
-
+		
 		if(resetTimer > resetTime)
 			FlipCar();
 	}
-
+	
 	protected void FlipCar()
 	{
 		transform.rotation = Quaternion.LookRotation(transform.forward);

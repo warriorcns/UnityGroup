@@ -51,12 +51,13 @@ public class CarControllerAI : MonoBehaviour
 	public float steer = 0.0f;        //kąt sterowania
 	public bool brake = false;        //czy hamuje
 	public float steerScale = 0.0f;
-
+	
 	public Transform[] pointList;
 	public int currentIndex = 0;
-
+	
 	Vector3 destPos;
 	public Vector3 relativePos;
+	float scaleAngle = 4.0f;
 	
 	
 	//Klasa informacji o kole
@@ -98,7 +99,7 @@ public class CarControllerAI : MonoBehaviour
 		Wheels = new WheelData[4];
 		
 		InitializeWheels();
-
+		
 		rigidbody.centerOfMass = shiftCentre;  //ustawienie środka masy
 	}
 	
@@ -181,9 +182,9 @@ public class CarControllerAI : MonoBehaviour
 	{
 		accel = 0.3f;
 		brake = false;
-
 		
-		relativePos = (pointList[currentIndex].position  - transform.position);
+		//To co w komentarzu to dla szybkeigo skrecania
+		/*relativePos = (pointList[currentIndex].position  - transform.position);
 		Quaternion r = Quaternion.LookRotation(new Vector3(relativePos.x, relativePos.y, -relativePos.z));
 		Quaternion rot = Quaternion.Inverse(new Quaternion(transform.rotation.x, r.y, transform.rotation.z, r.w));
 		transform.rotation = new Quaternion(transform.rotation.x, rot.y, transform.rotation.z, rot.w);
@@ -194,9 +195,30 @@ public class CarControllerAI : MonoBehaviour
 			findNextWayPoint();
 		}
 
-
-		float delta = Time.fixedDeltaTime;           //Bieżący czas
-
+		float delta = Time.fixedDeltaTime;*/           //Bieżący czas
+		
+		
+		
+		/*Quaternion targetRotation = Quaternion.LookRotation(destPos - transform.position);
+		transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * curRotSpeed);*/
+		
+		relativePos = (pointList[currentIndex].position  - transform.position);
+		Quaternion r = Quaternion.LookRotation(new Vector3(relativePos.x, relativePos.y, -relativePos.z));
+		Quaternion rot = Quaternion.Inverse(new Quaternion(transform.rotation.x, r.y, transform.rotation.z, r.w));
+		
+		Quaternion r2 = new Quaternion(transform.rotation.x, rot.y, transform.rotation.z, rot.w);
+		
+		transform.rotation = Quaternion.Slerp (transform.rotation, r2, Time.deltaTime * scaleAngle);
+		
+		float dist = Vector3.Distance(transform.position, pointList[currentIndex].position);
+		if (dist <= 20.0f)
+		{
+			findNextWayPoint();
+		}
+		
+		float delta = Time.fixedDeltaTime;
+		
+		
 		
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
 		if(currentGear == 1 && accel < 0.0f)  
@@ -249,7 +271,7 @@ public class CarControllerAI : MonoBehaviour
 			
 			//Obliczanie obrotu kół względem osi x
 			wd.rotationX = Mathf.Repeat(wd.rotationX + delta * wd.collider.rpm * 360.0f / 60.0f, 360.0f);
-
+			
 			wd.transform.localRotation = Quaternion.Euler (wd.rotationX, 0.0f, 0.0f);
 		}
 		
@@ -291,9 +313,9 @@ public class CarControllerAI : MonoBehaviour
 				}
 			}
 		}
-
+		
 	}
-
+	
 	void findNextWayPoint()
 	{
 		currentIndex++;
@@ -329,5 +351,6 @@ public class CarControllerAI : MonoBehaviour
 		rigidbody.angularVelocity = Vector3.zero;
 		resetTimer = 0;
 	}
-
+	
 }
+
