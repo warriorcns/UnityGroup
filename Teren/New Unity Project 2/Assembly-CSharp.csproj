@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Models\Campfire Pack\Script\SwitchView.cs" />
      <Compile Include="Assets\Scripts\Car.cs" />
+     <Compile Include="Assets\Scripts\CarControllerAI.cs" />
      <Compile Include="Assets\Scripts\PlayerCarController.cs" />
      <Compile Include="Assets\Scripts\SmoothFollow.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
