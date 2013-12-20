@@ -1,16 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-using UnityEngine;
-using System.Collections;
-
-public enum WheelDrive 
-{
-	Front = 0,
-	Back = 1,
-	All = 2
-}
-
 public class Car : MonoBehaviour {
 	
 	public WheelCollider[] frontWheelColliders;  //tablica przednich zderzaczy kół
@@ -33,12 +23,11 @@ public class Car : MonoBehaviour {
 	public float wheelRadius = 0.599f; // promień koła
 	public float torque = 100f; // moc bazowa silnika
 	public float brakeTorque = 0.0f; // moc hamowania
-	public WheelDrive wheelDrive = WheelDrive.Front; // koła prowadzące śa przednimi	
 	public float shiftDownRPM = 1500.0f; // przesunie bieg w doł
 	public float shiftUpRPM = 2500.0f; // przesunie bieg w górę
 	public float idleRPM = 500.0f; // bezczynne (obroty na minutę)	
 	float[] gears = new float[6]{ -10f, 9f, 6f, 4.5f, 3f, 2.5f }; //biegi
-	public bool automatic = true; //jeśli skrzynia biegów jest automatyczna
+
 	public int currentGear = 1; // bieżący bieg
 	float shiftDelay = 0.0f;
 	float wantedRPM = 0.0f; // liczba obrotów na minutę jaką silnik stara się osiągnąć
@@ -95,6 +84,7 @@ public class Car : MonoBehaviour {
 		fc.asymptoteValue = 5000.0f;
 		fc.extremumSlip = 2.0f;
 		fc.asymptoteSlip = 20.0f;
+		fc.extremumValue = 30000f;
 		col.forwardFriction = fc;
 		
 		fc = col.sidewaysFriction;
@@ -103,16 +93,16 @@ public class Car : MonoBehaviour {
 		fc.stiffness = swyStiffness;
 		col.sidewaysFriction = fc;
 	}
-	
+
+	//To co na początku
 	void Start()
 	{
-		Wheels = new WheelData[4];
-		
-		InitializeWheels();
-		
+		Wheels = new WheelData[4];		
+		InitializeWheels();	
 		rigidbody.centerOfMass = shiftCentre;  //ustawienie środka masy
 	}
-	
+
+	//Ustawianie kół
 	void InitializeWheels()
 	{
 		int currentWheel = 0;
@@ -154,8 +144,12 @@ public class Car : MonoBehaviour {
 		}
 	}
 	
-	protected virtual void CarUpdate() 
+	protected void CarUpdate() 
 	{ 
+		steerScale = Input.GetAxis("Horizontal");
+		accel = Input.GetAxis("Vertical");   //przyspieszenie pojazdu
+		brake = Input.GetButton ("Jump");       //czy hamuje?
+
 		Control();
 	}
 	
@@ -202,6 +196,10 @@ public class Car : MonoBehaviour {
 		var speedFactor = rigidbody.velocity.magnitude/lowestSteerAtSpeed;	
 		var steer = Mathf.Lerp(lowSpeedSteerAngle,highSpeedSteerAngle,speedFactor);	
 		steer *= steerScale;  //kąt sterowania pojazdem
+
+		if (Input.GetKeyDown("r")) {
+			FlipCar();
+		}
 		
 		//jeśli bieżący bieg to 1 a przyspieszenie mniejsze od 0
 		if(currentGear == 1 && accel < 0.0f)  
@@ -360,7 +358,8 @@ public class Car : MonoBehaviour {
 		if(resetTimer > resetTime)
 			FlipCar();
 	}
-	
+
+	//Powrót samochodu do nornalnej pozycji jeśli jest przewrócony
 	protected void FlipCar()
 	{
 		transform.rotation = Quaternion.LookRotation(transform.forward);
@@ -368,5 +367,22 @@ public class Car : MonoBehaviour {
 		rigidbody.velocity = Vector3.zero;
 		rigidbody.angularVelocity = Vector3.zero;
 		resetTimer = 0;
+	}
+
+	public void OnGUI() //rysowanie tesktu na ekranie
+	{
+		float speed = rigidbody.velocity.magnitude * 3.6f;
+			
+		string msg = "Prędkość " + speed.ToString("f0") + "km/h, bieg " + currentGear; 
+
+		Color textColor = new Color(120, 218, 222);
+
+		GUIStyle style = new GUIStyle();
+		style.fontSize = 40;
+		style.normal.textColor = textColor;
+			
+		GUILayout.BeginArea(new Rect(0, Screen.height - 200, 500, 100), GUI.skin.window);
+		GUILayout.Label(msg, style);
+		GUILayout.EndArea();
 	}
 }

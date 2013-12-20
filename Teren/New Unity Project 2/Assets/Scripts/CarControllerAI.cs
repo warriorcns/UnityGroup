@@ -23,12 +23,10 @@ public class CarControllerAI : MonoBehaviour
 	public float wheelRadius = 0.599f; // promień koła
 	public float torque = 100f; // moc bazowa silnika
 	public float brakeTorque = 0.0f; // moc hamowania
-	public WheelDrive wheelDrive = WheelDrive.Front; // koła prowadzące śa przednimi	
 	public float shiftDownRPM = 1500.0f; // przesunie bieg w doł
 	public float shiftUpRPM = 2500.0f; // przesunie bieg w górę
 	public float idleRPM = 500.0f; // bezczynne (obroty na minutę)	
 	float[] gears = new float[6]{ -10f, 9f, 6f, 4.5f, 3f, 2.5f }; //biegi
-	public bool automatic = true; //jeśli skrzynia biegów jest automatyczna
 	public int currentGear = 1; // bieżący bieg
 	float shiftDelay = 0.0f;
 	float wantedRPM = 0.0f; // liczba obrotów na minutę jaką silnik stara się osiągnąć
@@ -52,12 +50,13 @@ public class CarControllerAI : MonoBehaviour
 	public bool brake = false;        //czy hamuje
 	public float steerScale = 0.0f;
 	
-	public Transform[] pointList;
-	public int currentIndex = 0;
+	public Transform[] pointList;   //lista waypointów
+	public int currentIndex = 0;   //bieżący waypoint
+	float rndRadius = 7.0f;   //maksymalna losowa wartość odległości od punktu
 	
-	Vector3 destPos;
-	public Vector3 relativePos;
-	float scaleAngle = 4.0f;
+	Vector3 destPos = Vector3.zero;   //punkt do którego akualnie zmierza smaochód
+	public Vector3 relativePos;    //pomocnicza do określania kierunku jazdy
+	float scaleAngle = 4.0f;     //stopień obrotu (żeby nie odrazu)
 	
 	
 	//Klasa informacji o kole
@@ -96,11 +95,11 @@ public class CarControllerAI : MonoBehaviour
 	
 	void Start()
 	{
-		Wheels = new WheelData[4];
-		
-		InitializeWheels();
-		
+		Wheels = new WheelData[4];	
+		InitializeWheels();		
 		rigidbody.centerOfMass = shiftCentre;  //ustawienie środka masy
+
+		destPos = pointList[currentIndex].position;
 	}
 	
 	void InitializeWheels()
@@ -183,26 +182,8 @@ public class CarControllerAI : MonoBehaviour
 		accel = 0.3f;
 		brake = false;
 		
-		//To co w komentarzu to dla szybkeigo skrecania
-		/*relativePos = (pointList[currentIndex].position  - transform.position);
-		Quaternion r = Quaternion.LookRotation(new Vector3(relativePos.x, relativePos.y, -relativePos.z));
-		Quaternion rot = Quaternion.Inverse(new Quaternion(transform.rotation.x, r.y, transform.rotation.z, r.w));
-		transform.rotation = new Quaternion(transform.rotation.x, rot.y, transform.rotation.z, rot.w);
+		relativePos = (destPos - transform.position);
 
-		float dist = Vector3.Distance(transform.position, pointList[currentIndex].position);
-		if (dist <= 20.0f)
-		{
-			findNextWayPoint();
-		}
-
-		float delta = Time.fixedDeltaTime;*/           //Bieżący czas
-		
-		
-		
-		/*Quaternion targetRotation = Quaternion.LookRotation(destPos - transform.position);
-		transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * curRotSpeed);*/
-		
-		relativePos = (pointList[currentIndex].position  - transform.position);
 		Quaternion r = Quaternion.LookRotation(new Vector3(relativePos.x, relativePos.y, -relativePos.z));
 		Quaternion rot = Quaternion.Inverse(new Quaternion(transform.rotation.x, r.y, transform.rotation.z, r.w));
 		
@@ -312,8 +293,7 @@ public class CarControllerAI : MonoBehaviour
 					collider.motorTorque = (curTorque * 0.9f + newTorque * 0.1f) * 0.5f;
 				}
 			}
-		}
-		
+		}		
 	}
 	
 	void findNextWayPoint()
@@ -324,6 +304,13 @@ public class CarControllerAI : MonoBehaviour
 			//currentIndex = pointList.Length - 1;
 			currentIndex = 0;
 		}
+		
+		Vector3 rndPosition = new Vector3(Random.Range(-rndRadius, rndRadius), 0.0f, Random.Range(-rndRadius, rndRadius));
+
+		if(currentIndex % 3 == 0)
+			destPos = pointList[currentIndex].position + rndPosition;
+		else
+			destPos = pointList[currentIndex].position;
 	}
 	
 	void Update()
