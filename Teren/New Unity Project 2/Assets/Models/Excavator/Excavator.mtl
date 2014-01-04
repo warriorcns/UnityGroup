@@ -1,0 +1,190 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+newmtl Material__25
+Ka  0.0 0.0 0.0
+Kd  0.0 0.0 0.0
+Ks  0.0 0.0 0.0
+d  1.0
+Ns  0.0
+illum 2
+#
+# Multi/Sub Material__0 (7) to come 
+#
+newmtl yellow
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl Material__1
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl Material__2
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl yellow
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+map_Kd lakeREM.jpg
+#
+newmtl Material__1
+Ka  0.2 0.2 0.2
+Kd  1.0 0.7 0.2
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl yellow
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+map_Kd lakeREM.jpg
+#
+newmtl Material__1
+Ka  0.2 0.2 0.2
+Kd  1.0 0.7 0.2
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  2.0
+illum 2
+#
+# Multi/Sub Material__0 done 
+#
+# Multi/Sub Material__3 (2) to come 
+#
+newmtl yellow
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+map_Kd lakeREM.jpg
+#
+newmtl Material__1
+Ka  0.2 0.2 0.2
+Kd  1.0 0.7 0.2
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  2.0
+illum 2
+#
+# Multi/Sub Material__3 done 
+#
+newmtl BLAC_PLST
+Ka  0.2 0.2 0.2
+Kd  0.2 0.1 0.1
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  3.0
+illum 2
+map_Kd lakeREM.jpg
+#
+# Multi/Sub body (4) to come 
+#
+newmtl yellow
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl Material__4
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl Material__5
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+newmtl Material__6
+Ka  0.0 0.0 0.0
+Kd  1.0 0.7 0.1
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  2.0
+illum 2
+#
+# Multi/Sub body done 
+#
+newmtl Material__3
+Ka  0.2 0.2 0.2
+Kd  0.7 0.7 0.7
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  5.4
+illum 2
+#
+newmtl Material__5
+Ka  0.0 0.0 0.0
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  10.0
+illum 2
+#
+newmtl Material__1
+Ka  0.0 0.0 0.0
+Kd  0.1 0.2 0.0
+Ks  1.0 1.0 1.0
+d  0.4
+Ns  10.0
+illum 2
+#
+newmtl light
+Ka  0.1 0.1 0.1
+Kd  0.7 0.7 0.7
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  10.0
+illum 2
+map_Kd lakeREM.jpg
+bump LIGHTB.jpg
+#
+newmtl gray
+Ka  0.2 0.2 0.2
+Kd  0.7 0.7 0.7
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  5.4
+illum 2
+map_Kd lakeREM.jpg
+#
+newmtl black2
+Ka  0.0 0.0 0.0
+Kd  0.3 0.3 0.2
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  10.0
+illum 2
+#
+# EOF
